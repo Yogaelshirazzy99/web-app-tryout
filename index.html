@@ -1,0 +1,232 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Latihan UTBK – Platform Tryout</title>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;600;800&display=swap" rel="stylesheet">
+<style>
+:root{--bg:#F5F6FB;--ink:#14183A;--mut:#5D6286;--pri:#3B3FD8;--hi:#FFD23F;--ok:#1E9E6A;--bad:#D9363E;--card:#fff;--ln:#DDE0F0}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--ink);font:16px/1.55 'Plus Jakarta Sans',system-ui,sans-serif}
+header{background:var(--ink);color:#fff;position:sticky;top:0;z-index:5}
+nav{max-width:1000px;margin:auto;display:flex;flex-wrap:wrap;gap:4px;align-items:center;padding:10px 16px}
+nav b{font-size:20px;margin-right:auto;cursor:pointer}
+nav b span{background:var(--hi);color:var(--ink);padding:0 6px;border-radius:4px}
+nav a{color:#cfd2f5;padding:6px 10px;border-radius:6px;cursor:pointer;font-size:14px;font-weight:600}
+nav a:hover,nav a.on{background:#262b5e;color:#fff}
+main{max-width:1000px;margin:auto;padding:24px 16px 60px}
+h1{font-size:clamp(30px,6vw,52px);line-height:1.05;margin:0 0 12px;font-weight:800;letter-spacing:-.02em}
+h2{font-size:24px;margin:28px 0 12px}h3{margin:0 0 4px;font-size:18px}
+.hero{background:var(--pri);color:#fff;border-radius:16px;padding:32px;display:grid;gap:20px}
+.hero p{max-width:52ch;margin:0;color:#e1e2ff}
+.hero mark{background:var(--hi);color:var(--ink);padding:0 6px}
+.grid{display:grid;gap:14px;grid-template-columns:repeat(auto-fill,minmax(260px,1fr))}
+.card{background:var(--card);border:1px solid var(--ln);border-radius:12px;padding:16px}
+.card p{margin:4px 0 12px;color:var(--mut);font-size:14px}
+.btn{background:var(--pri);color:#fff;border:0;border-radius:8px;padding:10px 16px;font:600 15px inherit;font-family:inherit;cursor:pointer}
+.btn:hover{filter:brightness(1.1)}.btn.y{background:var(--hi);color:var(--ink)}.btn.g{background:#fff;color:var(--ink);border:1px solid var(--ln)}
+.btn:focus-visible,a:focus-visible,input:focus-visible,select:focus-visible{outline:3px solid var(--hi);outline-offset:2px}
+.tag{display:inline-block;font-size:12px;font-weight:700;padding:2px 8px;border-radius:99px;background:#E6E8FA;color:var(--pri)}
+.tag.p{background:var(--hi);color:var(--ink)}.tag.f{background:#DDF3E9;color:var(--ok)}
+table{width:100%;border-collapse:collapse;background:#fff;border:1px solid var(--ln);border-radius:12px;overflow:hidden}
+th,td{text-align:left;padding:10px 12px;border-bottom:1px solid var(--ln);font-size:14px}th{background:#ECEEFA}
+.wrap{overflow-x:auto}
+input,select,textarea{font:inherit;padding:9px 10px;border:1px solid var(--ln);border-radius:8px;width:100%;margin:4px 0 10px;background:#fff}
+.exam{display:grid;gap:16px;grid-template-columns:1fr}
+@media(min-width:800px){.exam{grid-template-columns:1fr 230px}}
+.opt{display:block;width:100%;text-align:left;background:#fff;border:2px solid var(--ln);border-radius:10px;padding:12px;margin:8px 0;cursor:pointer;font:inherit}
+.opt.s{border-color:var(--pri);background:#ECEEFF}.opt.ok{border-color:var(--ok);background:#E6F6EE}.opt.no{border-color:var(--bad);background:#FCE8E9}
+.nums{display:grid;grid-template-columns:repeat(5,1fr);gap:6px}
+.nums button{padding:8px 0;border:1px solid var(--ln);border-radius:6px;background:#fff;cursor:pointer;font:inherit}
+.nums .d{background:var(--pri);color:#fff}.nums .c{outline:3px solid var(--hi)}
+.timer{font-size:28px;font-weight:800;font-variant-numeric:tabular-nums}
+.big{font-size:72px;font-weight:800;line-height:1;color:var(--pri)}
+.bar{height:10px;background:#E6E8FA;border-radius:9px;overflow:hidden}.bar i{display:block;height:100%;background:var(--pri)}
+.lock{opacity:.6}
+.player{aspect-ratio:16/9;background:var(--ink);color:#fff;border-radius:12px;display:grid;place-items:center;text-align:center;padding:20px}
+.tabs{display:flex;gap:6px;margin:12px 0;flex-wrap:wrap}
+.note{background:#FFF6D1;border:1px solid var(--hi);border-radius:10px;padding:10px 14px;font-size:14px}
+.pay{display:flex;gap:8px;flex-wrap:wrap;margin:8px 0 14px}.pay label{border:2px solid var(--ln);border-radius:8px;padding:8px 12px;cursor:pointer;background:#fff}
+</style>
+</head>
+<body>
+<header><nav id="nav"></nav></header>
+<main id="app"></main>
+<script>
+/* ===== DATA (edit di sini) ===== */
+const T=[
+ {id:'t1',n:'UTBK Paket 1',k:'UTBK',m:15,p:0},
+ {id:'t2',n:'TKA Saintek 1',k:'TKA',m:15,p:0},
+ {id:'t3',n:'UTBK Paket 2 (Premium)',k:'UTBK',m:15,p:1},
+ {id:'t4',n:'TKA Soshum 1 (Premium)',k:'TKA',m:15,p:1}];
+const Q0=[
+ {t:['t1','t3'],s:'Penalaran Matematika',q:'Jika 3x + 5 = 20, nilai x adalah …',o:['3','4','5','6'],a:2},
+ {t:['t1','t3'],s:'Penalaran Matematika',q:'Rata-rata 4 bilangan adalah 10. Jika satu bilangan 6 dihapus, rata-rata 3 bilangan sisanya …',o:['10','11','12','34/3'],a:3},
+ {t:['t1','t3'],s:'Penalaran Umum',q:'Semua dokter pandai. Sebagian orang pandai rajin. Kesimpulan yang pasti benar …',o:['Semua dokter rajin','Sebagian dokter rajin','Dokter adalah orang pandai','Orang rajin adalah dokter'],a:2},
+ {t:['t1','t3'],s:'Literasi Bahasa Indonesia',q:'Kalimat efektif adalah …',o:['Para hadirin-hadirat dimohon berdiri','Hadirin dimohon berdiri','Banyak para tamu hadir','Naik ke atas panggung'],a:1},
+ {t:['t1','t3'],s:'Literasi Bahasa Inggris',q:'She ___ to school every day.',o:['go','goes','going','gone'],a:1},
+ {t:['t2','t4'],s:'Matematika',q:'Turunan dari f(x) = x² + 3x adalah …',o:['2x','2x + 3','x + 3','2x² + 3'],a:1},
+ {t:['t2','t4'],s:'Fisika',q:'Benda 2 kg dipercepat 3 m/s². Gaya yang bekerja …',o:['1,5 N','5 N','6 N','9 N'],a:2},
+ {t:['t2','t4'],s:'Kimia',q:'Nomor atom Natrium (Na) adalah …',o:['9','11','17','19'],a:1},
+ {t:['t2','t4'],s:'Biologi',q:'Organel penghasil energi sel adalah …',o:['Ribosom','Lisosom','Mitokondria','Badan Golgi'],a:2},
+ {t:['t2','t4'],s:'Ekonomi',q:'Kenaikan harga barang secara umum dan terus-menerus disebut …',o:['Deflasi','Inflasi','Resesi','Devaluasi'],a:1}];
+const MB=[
+ ['Kegiatan akhir pekan favorit?',['Merakit atau memperbaiki alat','Membaca dan meneliti','Menggambar atau menulis']],
+ ['Di kelompok, kamu biasanya …',['Memimpin dan meyakinkan orang','Membantu teman yang kesulitan','Mengatur data dan jadwal']],
+ ['Mata pelajaran paling menarik?',['Fisika / Teknik','Biologi / Kimia','Seni / Bahasa']],
+ ['Pekerjaan impian?',['Pengusaha / manajer','Guru / dokter / psikolog','Akuntan / analis data']],
+ ['Cara kamu menyelesaikan masalah?',['Mencoba langsung praktik','Mencari teori dan bukti','Mencari ide yang belum ada']],
+ ['Lingkungan kerja ideal?',['Lapangan atau bengkel','Laboratorium atau klinik','Studio atau kantor rapi']]];
+const MBR={a:['Realistis / Teknis','Teknik, Arsitektur, Pertanian, Teknologi Informasi'],
+ b:['Investigatif / Sosial','Kedokteran, Sains, Psikologi, Pendidikan, Keperawatan'],
+ c:['Artistik / Konvensional','Desain, Komunikasi, Sastra, Akuntansi, Manajemen, Hukum']};
+const VID=[
+ {n:'Strategi Penalaran Umum dalam 10 Menit',d:'12:40',p:0},{n:'Trik Cepat Matematika UTBK',d:'18:05',p:1},
+ {n:'Manajemen Waktu Saat Tes',d:'09:15',p:0},{n:'Bedah Soal Literasi Inggris',d:'21:30',p:1}];
+const KAT=[
+ {k:'Event',n:'Webinar Memilih Jurusan 2027',w:'12 Nov 2026',h:'Gratis'},
+ {k:'Event',n:'Try Out Nasional Serentak',w:'28 Nov 2026',h:'Rp25.000'},
+ {k:'Bimbel',n:'Intensive UTBK 3 Bulan',w:'Online · Senin–Jumat',h:'Rp1.500.000'},
+ {k:'Bimbel',n:'Kelas Privat Matematika',w:'Online · Fleksibel',h:'Rp150.000 / sesi'}];
+const PKT=[{n:'1 Bulan',h:49000},{n:'3 Bulan',h:119000},{n:'12 Bulan',h:349000}];
+const SEED=['Aulia R.','Bima S.','Citra D.','Dimas P.','Eka W.'];
+
+/* ===== STATE ===== */
+let S;try{S=JSON.parse(localStorage.getItem('tc'))}catch(e){}
+S=S||{u:null,res:[],qs:[],tx:[],users:[]};
+const save=()=>{try{localStorage.setItem('tc',JSON.stringify(S))}catch(e){}};
+const rp=n=>'Rp'+n.toLocaleString('id-ID');
+const Q=()=>Q0.concat(S.qs);
+const $=s=>document.querySelector(s);
+let E=null,iv=null,view='home',arg=null;
+
+function go(v,a){view=v;arg=a;if(v!=='exam'&&iv){clearInterval(iv);iv=null}render();scrollTo(0,0)}
+function nav(){
+ const L=[['home','Beranda'],['tryout','Tryout'],['lb','Leaderboard'],['minat','Minat Bakat'],['vod','Video'],['kat','Event & Bimbel'],['premium','Premium']];
+ if(S.u)L.push(['dash',S.u.admin?'Admin':'Dashboard']);
+ $('#nav').innerHTML='<b onclick="go(\'home\')">Latihan<span>UTBK</span></b>'+L.map(l=>`<a tabindex=0 class="${view==l[0]?'on':''}" onclick="go('${l[0]}')">${l[1]}</a>`).join('')+
+ (S.u?`<a onclick="out()">Keluar</a>`:`<a onclick="go('login')">Masuk</a>`);
+}
+function out(){S.u=null;save();go('home')}
+function need(){if(!S.u){go('login');return 1}}
+function render(){nav();const f=V[view];$('#app').innerHTML=f?f():'';}
+
+/* ===== VIEWS ===== */
+const V={
+home:()=>`<div class="hero"><div><h1>Latihan soal UTBK dan TKA, <mark>dinilai langsung.</mark></h1>
+<p>Kerjakan tryout dengan timer, lihat skor dan pembahasan, lalu bandingkan peringkatmu di leaderboard.</p></div>
+<div><button class="btn y" onclick="go('tryout')">Mulai tryout gratis</button> <button class="btn g" onclick="go('minat')">Tes minat bakat</button></div></div>
+<div class="note" style="margin-top:14px">Ini versi uji coba. Data tersimpan di browser perangkat ini dan pembayaran hanya simulasi.</div>
+<h2>Tryout terbaru</h2><div class="grid">${T.map(tc).join('')}</div>
+<h2>Isi platform</h2><div class="grid">
+<div class="card"><h3>Tryout UTBK &amp; TKA</h3><p>Timer, navigasi soal, skor otomatis, pembahasan.</p></div>
+<div class="card"><h3>Leaderboard</h3><p>Peringkat per tryout.</p></div>
+<div class="card"><h3>Minat bakat</h3><p>Asesmen singkat dengan rekomendasi jurusan.</p></div>
+<div class="card"><h3>Video tips &amp; trik</h3><p>Tonton kapan saja, sebagian untuk anggota premium.</p></div></div>`,
+
+login:()=>`<div class="card" style="max-width:420px;margin:auto"><h2 style="margin-top:0">Masuk</h2>
+<label>Nama<input id="nm" placeholder="Nama lengkap"></label>
+<label>Peran<select id="rl"><option value="0">Peserta</option><option value="1">Admin</option></select></label>
+<button class="btn" onclick="login()">Masuk</button>
+<p class="note" style="margin-top:14px">Login simulasi, tanpa kata sandi. Versi produksi memakai Supabase Auth.</p></div>`,
+
+tryout:()=>`<h1 style="font-size:36px">Tryout</h1><div class="tabs">${['Semua','UTBK','TKA'].map(k=>`<button class="btn g" onclick="arg='${k}';render()">${k}</button>`).join('')}</div>
+<div class="grid">${T.filter(t=>!arg||arg=='Semua'||t.k==arg).map(tc).join('')}</div>`,
+
+exam:()=>{const q=E.qs[E.i];return `<div class="exam"><div class="card"><span class="tag">${q.s}</span>
+<h3 style="margin:10px 0">Soal ${E.i+1} dari ${E.qs.length}</h3><p style="color:var(--ink);font-size:17px">${q.q}</p>
+${q.o.map((o,j)=>`<button class="opt ${E.ans[E.i]===j?'s':''}" onclick="pick(${j})"><b>${'ABCD'[j]}.</b> ${o}</button>`).join('')}
+<div style="display:flex;gap:8px;margin-top:10px"><button class="btn g" onclick="mv(-1)">Sebelumnya</button><button class="btn g" onclick="mv(1)">Berikutnya</button></div></div>
+<div class="card"><div>Sisa waktu</div><div class="timer" id="tm">--:--</div>
+<div class="nums" style="margin:12px 0">${E.qs.map((_,k)=>`<button class="${E.ans[k]!=null?'d':''} ${k==E.i?'c':''}" onclick="E.i=${k};render()">${k+1}</button>`).join('')}</div>
+<button class="btn y" style="width:100%" onclick="if(confirm('Kumpulkan jawaban sekarang?'))fin()">Kumpulkan</button></div></div>`},
+
+result:()=>{const r=arg,t=T.find(x=>x.id==r.t);return `<div class="card"><p>${t.n}</p><div class="big">${r.s}</div>
+<p>Skor dari 1000 · benar ${r.b} dari ${r.n} soal · peringkat ${rank(r.t,r.s)}</p>
+<button class="btn" onclick="go('lb')">Lihat leaderboard</button> <button class="btn g" onclick="go('tryout')">Tryout lain</button></div>
+<h2>Pembahasan</h2>${r.rv.map((x,i)=>`<div class="card" style="margin-bottom:10px"><span class="tag">${x.q.s}</span><p style="color:var(--ink)"><b>${i+1}.</b> ${x.q.q}</p>
+${x.q.o.map((o,j)=>`<div class="opt ${j==x.q.a?'ok':j==x.a?'no':''}">${'ABCD'[j]}. ${o}</div>`).join('')}
+<p>${x.a==null?'Tidak dijawab.':x.a==x.q.a?'Jawabanmu benar.':'Jawabanmu salah. Jawaban benar: '+'ABCD'[x.q.a]+'.'}</p></div>`).join('')}`},
+
+lb:()=>{const id=arg&&arg.length==2?arg:'t1';return `<h1 style="font-size:36px">Leaderboard</h1>
+<div class="tabs">${T.map(t=>`<button class="btn ${t.id==id?'':'g'}" onclick="arg='${t.id}';render()">${t.n.replace(' (Premium)','')}</button>`).join('')}</div>
+<div class="wrap"><table><tr><th>#</th><th>Nama</th><th>Skor</th></tr>${board(id).slice(0,10).map((r,i)=>`<tr><td>${i+1}</td><td>${r.n}${S.u&&r.n==S.u.n?' <span class="tag">kamu</span>':''}</td><td>${r.s}</td></tr>`).join('')}</table></div>
+<p class="note" style="margin-top:12px">Peringkat lain berisi data contoh. Leaderboard bersama antar pengguna butuh database (tahap berikutnya).</p>`},
+
+minat:()=>{if(arg&&arg.r){const r=MBR[arg.r];return `<div class="card"><p>Kecenderunganmu</p><h1 style="font-size:34px">${r[0]}</h1><p>Rumpun jurusan yang cocok dijajaki: ${r[1]}.</p>
+<button class="btn" onclick="arg=null;render()">Ulangi tes</button></div>`}
+return `<h1 style="font-size:36px">Tes minat bakat</h1><p>Pilih jawaban yang paling menggambarkan dirimu.</p>
+${MB.map((m,i)=>`<div class="card" style="margin-bottom:10px"><b>${i+1}. ${m[0]}</b>${m[1].map((o,j)=>`<label class="opt" style="display:block"><input type="radio" name="m${i}" value="${'abc'[j]}" style="width:auto;margin:0 8px 0 0">${o}</label>`).join('')}</div>`).join('')}
+<button class="btn" onclick="mbDone()">Lihat hasil</button>`},
+
+vod:()=>`<h1 style="font-size:36px">Video tips &amp; trik UTBK</h1>${arg&&arg.n?`<div class="player"><div><h3>${arg.n}</h3><p>Pemutar video. Ganti dengan tautan YouTube/Vimeo/Bunny Stream di data VID.</p></div></div><p></p>`:''}
+<div class="grid">${VID.map((v,i)=>{const L=v.p&&!(S.u&&S.u.pr);return `<div class="card ${L?'lock':''}"><span class="tag ${v.p?'p':'f'}">${v.p?'Premium':'Gratis'}</span><h3 style="margin-top:8px">${v.n}</h3><p>${v.d} menit</p>
+<button class="btn ${L?'g':''}" onclick="play(${i})">${L?'Buka dengan premium':'Tonton'}</button></div>`}).join('')}</div>`,
+
+kat:()=>{const k=arg&&typeof arg=='string'?arg:'Semua';return `<h1 style="font-size:36px">Event &amp; bimbel</h1>
+<div class="tabs">${['Semua','Event','Bimbel'].map(x=>`<button class="btn ${x==k?'':'g'}" onclick="arg='${x}';render()">${x}</button>`).join('')}</div>
+<div class="grid">${KAT.filter(x=>k=='Semua'||x.k==k).map(x=>`<div class="card"><span class="tag">${x.k}</span><h3 style="margin-top:8px">${x.n}</h3><p>${x.w}<br><b>${x.h}</b></p><button class="btn" onclick="alert('Pendaftaran: simulasi. Hubungkan ke formulir atau WhatsApp penyelenggara.')">Daftar</button></div>`).join('')}</div>`},
+
+premium:()=>S.u&&S.u.pr?`<div class="card"><h2 style="margin-top:0">Kamu sudah premium</h2><p>Semua tryout dan video terbuka sampai ${S.u.exp}.</p><button class="btn" onclick="go('tryout')">Ke tryout</button></div>`:
+`<h1 style="font-size:36px">Paket premium</h1><p>Buka semua tryout, pembahasan, dan video.</p>
+<div class="grid">${PKT.map((p,i)=>`<div class="card"><h3>${p.n}</h3><div style="font-size:26px;font-weight:800">${rp(p.h)}</div><p>Semua tryout dan video</p><button class="btn" onclick="co(${i})">Pilih</button></div>`).join('')}</div>`,
+
+pay:()=>{const p=PKT[arg];return `<div class="card" style="max-width:480px;margin:auto"><h2 style="margin-top:0">Pembayaran</h2><p>Paket ${p.n} · <b>${rp(p.h)}</b></p>
+<div class="pay">${['QRIS','VA BCA','GoPay'].map((m,i)=>`<label><input type="radio" name="mt" value="${m}" ${i?'':'checked'} style="width:auto;margin:0 6px 0 0">${m}</label>`).join('')}</div>
+<button class="btn y" onclick="paid()">Bayar (simulasi)</button>
+<p class="note" style="margin-top:12px">Tidak ada uang yang diproses. Versi produksi memakai Midtrans atau Xendit lewat server.</p></div>`},
+
+dash:()=>{if(!S.u)return V.login();return S.u.admin?adm():`<h1 style="font-size:36px">Halo, ${S.u.n}</h1>
+<div class="grid"><div class="card"><p>Status</p><h3>${S.u.pr?'Premium':'Gratis'}</h3>${S.u.pr?'':'<button class="btn y" onclick="go(\'premium\')">Upgrade</button>'}</div>
+<div class="card"><p>Tryout dikerjakan</p><h3>${mine().length}</h3></div>
+<div class="card"><p>Skor tertinggi</p><h3>${Math.max(0,...mine().map(r=>r.s))}</h3></div></div>
+<h2>Riwayat</h2>${mine().length?`<div class="wrap"><table><tr><th>Tryout</th><th>Tanggal</th><th>Skor</th></tr>${mine().map(r=>`<tr><td>${T.find(t=>t.id==r.t).n}</td><td>${r.d}</td><td>${r.s}</td></tr>`).join('')}</table></div>`:'<p>Belum ada riwayat. Kerjakan tryout pertamamu.</p><button class="btn" onclick="go(\'tryout\')">Mulai tryout</button>'}`}
+};
+
+/* ===== LOGIC ===== */
+function tc(t){const n=Q().filter(q=>q.t.includes(t.id)).length,L=t.p&&!(S.u&&S.u.pr);
+ return `<div class="card ${L?'lock':''}"><span class="tag">${t.k}</span> <span class="tag ${t.p?'p':'f'}">${t.p?'Premium':'Gratis'}</span>
+<h3 style="margin-top:8px">${t.n}</h3><p>${n} soal · ${t.m} menit</p><button class="btn ${L?'g':''}" onclick="start('${t.id}')">${L?'Buka dengan premium':'Kerjakan'}</button></div>`}
+function login(){const n=$('#nm').value.trim();if(!n)return alert('Isi nama dulu.');
+ let u=S.users.find(x=>x.n==n);if(!u){u={n,pr:0};S.users.push(u)}u.admin=$('#rl').value=='1';S.u=u;save();go(u.admin?'dash':'tryout')}
+function start(id){if(need())return;const t=T.find(x=>x.id==id);if(t.p&&!S.u.pr)return go('premium');
+ const qs=Q().filter(q=>q.t.includes(id));if(!qs.length)return alert('Belum ada soal.');
+ E={t:id,qs,ans:{},i:0,end:Date.now()+t.m*60000};go('exam');tick();iv=setInterval(tick,500)}
+function tick(){const s=Math.max(0,Math.round((E.end-Date.now())/1000)),el=$('#tm');if(el)el.textContent=String(s/60|0).padStart(2,'0')+':'+String(s%60).padStart(2,'0');if(!s)fin()}
+function pick(j){E.ans[E.i]=j;render();tick()}
+function mv(d){E.i=Math.min(E.qs.length-1,Math.max(0,E.i+d));render();tick()}
+function fin(){clearInterval(iv);iv=null;const rv=E.qs.map((q,i)=>({q,a:E.ans[i]==null?null:E.ans[i]})),b=rv.filter(x=>x.a===x.q.a).length,
+ s=Math.round(b/E.qs.length*1000),r={t:E.t,u:S.u.n,s,b,n:E.qs.length,d:new Date().toLocaleDateString('id-ID'),rv};
+ S.res.push({t:r.t,u:r.u,s,d:r.d});save();E=null;go('result',r)}
+const mine=()=>S.res.filter(r=>r.u==S.u.n);
+function board(id){const base=SEED.map((n,i)=>({n,s:880-i*95-(id.charCodeAt(1)%3)*20}));
+ const best={};S.res.filter(r=>r.t==id).forEach(r=>{best[r.u]=Math.max(best[r.u]||0,r.s)});
+ return base.concat(Object.keys(best).map(n=>({n,s:best[n]}))).sort((a,b)=>b.s-a.s)}
+function rank(id,s){return board(id).findIndex(r=>r.s<=s)+1}
+function mbDone(){const c={a:0,b:0,c:0};for(let i=0;i<MB.length;i++){const v=document.querySelector(`input[name=m${i}]:checked`);if(!v)return alert('Jawab semua pertanyaan dulu.');c[v.value]++}
+ go('minat',{r:Object.keys(c).sort((x,y)=>c[y]-c[x])[0]})}
+function play(i){const v=VID[i];if(v.p&&!(S.u&&S.u.pr))return S.u?go('premium'):go('login');go('vod',v)}
+function co(i){if(need())return;go('pay',i)}
+function paid(){const p=PKT[arg],m=document.querySelector('input[name=mt]:checked').value,d=new Date();d.setMonth(d.getMonth()+[1,3,12][arg]);
+ S.u.pr=1;S.u.exp=d.toLocaleDateString('id-ID');S.tx.push({u:S.u.n,p:p.n,h:p.h,m,d:new Date().toLocaleDateString('id-ID')});save();alert('Pembayaran berhasil (simulasi). Premium aktif.');go('premium')}
+
+/* ===== ADMIN ===== */
+function adm(){const rev=S.tx.reduce((a,x)=>a+x.h,0);return `<h1 style="font-size:36px">Dashboard admin</h1>
+<div class="grid"><div class="card"><p>Peserta</p><h3>${S.users.filter(u=>!u.admin).length}</h3></div><div class="card"><p>Tryout dikerjakan</p><h3>${S.res.length}</h3></div>
+<div class="card"><p>Pendapatan (simulasi)</p><h3>${rp(rev)}</h3></div><div class="card"><p>Bank soal</p><h3>${Q().length}</h3></div></div>
+<h2>Tambah soal</h2><div class="card"><label>Tryout<select id="aq_t">${T.map(t=>`<option value="${t.id}">${t.n}</option>`).join('')}</select></label>
+<label>Mata uji<input id="aq_s" placeholder="mis. Penalaran Umum"></label><label>Pertanyaan<textarea id="aq_q" rows="2"></textarea></label>
+${[0,1,2,3].map(j=>`<input id="aq_o${j}" placeholder="Pilihan ${'ABCD'[j]}">`).join('')}
+<label>Jawaban benar<select id="aq_a"><option value="0">A</option><option value="1">B</option><option value="2">C</option><option value="3">D</option></select></label>
+<button class="btn" onclick="addQ()">Simpan soal</button></div>
+<h2>Transaksi</h2>${S.tx.length?`<div class="wrap"><table><tr><th>Peserta</th><th>Paket</th><th>Metode</th><th>Jumlah</th><th>Tanggal</th></tr>${S.tx.map(x=>`<tr><td>${x.u}</td><td>${x.p}</td><td>${x.m}</td><td>${rp(x.h)}</td><td>${x.d}</td></tr>`).join('')}</table></div>`:'<p>Belum ada transaksi.</p>'}
+<h2>Peserta</h2><div class="wrap"><table><tr><th>Nama</th><th>Status</th><th>Aksi</th></tr>${S.users.filter(u=>!u.admin).map(u=>`<tr><td>${u.n}</td><td>${u.pr?'Premium':'Gratis'}</td><td><button class="btn g" onclick="tg('${u.n.replace(/'/g,'')}')">${u.pr?'Cabut premium':'Beri premium'}</button></td></tr>`).join('')||'<tr><td colspan=3>Belum ada peserta.</td></tr>'}</table></div>
+<p style="margin-top:14px"><button class="btn g" onclick="if(confirm('Hapus semua data uji coba?')){localStorage.removeItem('tc');location.reload()}">Reset data</button></p>`}
+function addQ(){const o=[0,1,2,3].map(j=>$('#aq_o'+j).value.trim()),q=$('#aq_q').value.trim();if(!q||o.some(x=>!x))return alert('Lengkapi pertanyaan dan semua pilihan.');
+ S.qs.push({t:[$('#aq_t').value],s:$('#aq_s').value||'Umum',q,o,a:+$('#aq_a').value});save();alert('Soal disimpan.');render()}
+function tg(n){const u=S.users.find(x=>x.n==n);u.pr=u.pr?0:1;if(u.pr)u.exp='—';save();render()}
+render();
+</script>
+</body>
+</html>
